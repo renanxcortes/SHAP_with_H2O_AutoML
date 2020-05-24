@@ -5,7 +5,8 @@ library(ggbeeswarm)
 df <- tibble(y = rep(c(0,1), c(1000,1000)), 
              x1 = rnorm(2000),
              x2 = rf(2000, df1 = 5, df2 = 2),
-             x3 = sample(rep(c('A', 'B', 'C'), c(500,500, 1000))))
+             x3 = runif(2000),
+             x4 = sample(rep(c('A', 'B', 'C'), c(500,500, 1000))))
 
 # For classification, the y column must be a factor.
 # Source: https://www.rdocumentation.org/packages/h2o/versions/3.26.0.2/topics/h2o.automl
@@ -52,7 +53,8 @@ shap_df <- SHAP_values %>%
   select(-BiasTerm) %>%
   gather(feature, shap_value) %>%
   group_by(feature) %>%
-  mutate(shap_importance = mean(abs(shap_value))) %>% 
+  mutate(shap_importance = mean(abs(shap_value)),
+         shap_force = mean(shap_value)) %>% 
   ungroup()
 
 
@@ -73,5 +75,18 @@ p2 <- shap_df %>%
   xlab(NULL) +
   ylab("mean(|SHAP value|)")
 
+# SHAP force plot
+p3 <- shap_df %>% 
+  select(feature, shap_importance, shap_force) %>%
+  distinct() %>% 
+  mutate(color = ifelse(shap_force < 0, 'Negativo', 'Positivo')) %>% 
+  ggplot(aes(x = reorder(feature, shap_importance), y = shap_force, fill = color)) +
+  geom_col() +
+  scale_fill_manual("legend", values = c("Negativo" = "red", "Positivo" = "blue")) + # https://stackoverflow.com/questions/38788357/change-bar-plot-colour-in-geom-bar-with-ggplot2-in-r
+  coord_flip() +
+  xlab(NULL) +
+  ylab("mean(SHAP value)") +
+  theme(legend.position = "none")
+
 # Combine plots
-gridExtra::grid.arrange(p1, p2, nrow = 1)
+gridExtra::grid.arrange(p1, p2, p3, nrow = 1)

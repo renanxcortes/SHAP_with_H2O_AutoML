@@ -32,7 +32,7 @@ automl_model <- h2o.automl(#x = x,
                            #validation_frame = df_frame_split[[2]], # read help(h2o.automl) !!!Optional. This argument is ignored unless the user sets nfolds = 0!!!
                            leaderboard_frame = df_frame_split[[2]],
                            max_runtime_secs = 60 * 2, # Two minutes
-                           #exclude_algos = "StackedEnsemble", # Global Importance of Stacked models are tricky
+                           #exclude_algos = "StackedEnsemble", # Global Importance of Stacked models is tricky
                            include_algos = c('DRF', 'GBM', 'XGBoost'), # Complete List help(h2o.automl)
                            sort_metric = "AUC")
 

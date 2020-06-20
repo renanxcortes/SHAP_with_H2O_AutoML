@@ -97,6 +97,20 @@ p3 <- shap_df %>%
 gridExtra::grid.arrange(p1, p2, p3, nrow = 1)
 
 
+# Shapley-based dependence plots for a numerical feature
+SHAP_values %>%
+  as.data.frame() %>%
+  select(-BiasTerm) %>% 
+  mutate(x5_feature_values = as.vector(df_frame_split[[2]]$x5)) %>% 
+  ggplot(aes(x = x5_feature_values, y = x5)) +
+  geom_point(aes(color = x5), width = 0.1) +
+  scale_colour_gradient(low = "red", high = "blue", name = 'SHAP values') +
+  ylab('Shapley\'s values for x5 feature') +
+  xlab('x5 values') +
+  theme_minimal(base_size = 15) +
+  geom_smooth()
+
+
 # Shapley-based dependence plots for a categorical feature
 SHAP_values %>%
   as.data.frame() %>%

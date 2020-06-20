@@ -80,10 +80,10 @@ p2 <- shap_df %>%
 p3 <- shap_df %>% 
   select(feature, shap_importance, shap_force) %>%
   distinct() %>% 
-  mutate(color = ifelse(shap_force < 0, 'Negativo', 'Positivo')) %>% 
+  mutate(color = ifelse(shap_force < 0, 'Negative', 'Positive')) %>% 
   ggplot(aes(x = reorder(feature, shap_importance), y = shap_force, fill = color)) +
   geom_col() +
-  scale_fill_manual("legend", values = c("Negativo" = "red", "Positivo" = "blue")) + # https://stackoverflow.com/questions/38788357/change-bar-plot-colour-in-geom-bar-with-ggplot2-in-r
+  scale_fill_manual("legend", values = c("Negative" = "red", "Positive" = "blue")) + # https://stackoverflow.com/questions/38788357/change-bar-plot-colour-in-geom-bar-with-ggplot2-in-r
   coord_flip() +
   xlab(NULL) +
   ylab("mean(SHAP value)") +

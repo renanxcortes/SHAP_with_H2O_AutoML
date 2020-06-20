@@ -25,7 +25,6 @@ df_frame <- as.h2o(df)
 # Source: http://h2o-release.s3.amazonaws.com/h2o/master/3552/docs-website/h2o-docs/datamunge/splitdatasets.html
 df_frame_split <- h2o.splitFrame(df_frame, ratios = 0.8)
 
-
 # Metric for binary classification (deviance is the default). Check documentation here http://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html
 automl_model <- h2o.automl(#x = x, 
                            y = 'y',
@@ -47,7 +46,6 @@ aml_leader <- automl_model@leader
 
 SHAP_values <- predict_contributions.H2OModel(aml_leader, df_frame_split[[2]])
 
-
 # Wrangling inspired here: https://bradleyboehmke.github.io/HOML/iml.html
 
 shap_df <- SHAP_values %>%
@@ -59,14 +57,12 @@ shap_df <- SHAP_values %>%
          shap_force = mean(shap_value)) %>% 
   ungroup()
 
-
 # SHAP contribution plot
 p1 <- ggplot(shap_df, aes(x = shap_value, y = reorder(feature, shap_importance))) +
   ggbeeswarm::geom_quasirandom(groupOnX = FALSE, varwidth = TRUE, size = 0.4, alpha = 0.25, width = 0.15) +
   xlab("SHAP value") +
   ylab(NULL) +
   theme_minimal(base_size = 15)
-
 
 # SHAP importance plot
 p2 <- shap_df %>% 
@@ -79,23 +75,8 @@ p2 <- shap_df %>%
   ylab("mean(|SHAP value|)") +
   theme_minimal(base_size = 15)
 
-# SHAP force plot
-p3 <- shap_df %>% 
-  select(feature, shap_importance, shap_force) %>%
-  distinct() %>% 
-  mutate(color = ifelse(shap_force < 0, 'Negative', 'Positive')) %>% 
-  ggplot(aes(x = reorder(feature, shap_importance), y = shap_force, fill = color)) +
-  geom_col() +
-  scale_fill_manual("Direction", values = c("Negative" = "red", "Positive" = "blue")) + # https://stackoverflow.com/questions/38788357/change-bar-plot-colour-in-geom-bar-with-ggplot2-in-r
-  coord_flip() +
-  xlab(NULL) +
-  ylab("mean(SHAP value)") +
-  theme(legend.position = "none") +
-  theme_minimal(base_size = 15)
-
 # Combine plots
-gridExtra::grid.arrange(p1, p2, p3, nrow = 1)
-
+gridExtra::grid.arrange(p1, p2, nrow = 1)
 
 # Shapley-based dependence plots for a numerical feature
 SHAP_values %>%
@@ -109,7 +90,6 @@ SHAP_values %>%
   xlab('x5 values') +
   theme_minimal(base_size = 15) +
   geom_smooth()
-
 
 # Shapley-based dependence plots for a categorical feature
 SHAP_values %>%

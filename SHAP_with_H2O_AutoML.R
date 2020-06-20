@@ -6,7 +6,8 @@ df <- tibble(y = rep(c(0,1), c(1000,1000)),
              x1 = rnorm(2000),
              x2 = rf(2000, df1 = 5, df2 = 2),
              x3 = runif(2000),
-             x4 = sample(rep(c('A', 'B', 'C'), c(500,500, 1000))))
+             x4 = sample(rep(c('A', 'B', 'C'), c(500,500, 1000))),
+             x5 = c(rnorm(1000), rnorm(1000, 0.25)))
 
 # For classification, the y column must be a factor.
 # Source: https://www.rdocumentation.org/packages/h2o/versions/3.26.0.2/topics/h2o.automl

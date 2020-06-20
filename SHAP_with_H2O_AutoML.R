@@ -6,7 +6,8 @@ df <- tibble(y = rep(c(0,1), c(1000,1000)),
              x1 = rnorm(2000),
              x2 = rf(2000, df1 = 5, df2 = 2),
              x3 = runif(2000),
-             x4 = sample(rep(c('A', 'B', 'C'), c(500,500, 1000))),
+             x4 = c(sample(rep(c('A', 'B', 'C'), c(300, 300, 400))), 
+                    sample(c('A', 'B', 'C'), 1000, prob = c(0.25, 0.25, 0.5), replace = T)),
              x5 = c(rnorm(1000), rnorm(1000, 0.25)))
 
 # For classification, the y column must be a factor.
@@ -20,7 +21,7 @@ h2o.init()
 df_frame <- as.h2o(df)
 
 # Note that when splitting frames, H2O does not give an exact split. 
-# It’s designed to be efficient on big data using a probabilistic splitting method rather than an exact split.
+# It is designed to be efficient on big data using a probabilistic splitting method rather than an exact split.
 # Source: http://h2o-release.s3.amazonaws.com/h2o/master/3552/docs-website/h2o-docs/datamunge/splitdatasets.html
 df_frame_split <- h2o.splitFrame(df_frame, ratios = 0.8)
 
@@ -61,7 +62,7 @@ shap_df <- SHAP_values %>%
 
 # SHAP contribution plot
 p1 <- ggplot(shap_df, aes(x = shap_value, y = reorder(feature, shap_importance))) +
-  ggbeeswarm::geom_quasirandom(groupOnX = FALSE, varwidth = TRUE, size = 0.4, alpha = 0.25) +
+  ggbeeswarm::geom_quasirandom(groupOnX = FALSE, varwidth = TRUE, size = 0.4, alpha = 0.25, width = 0.15) +
   xlab("SHAP value") +
   ylab(NULL)
 
@@ -91,3 +92,15 @@ p3 <- shap_df %>%
 
 # Combine plots
 gridExtra::grid.arrange(p1, p2, p3, nrow = 1)
+
+
+# Shapley-based dependence plots for a categorical feature
+SHAP_values %>%
+  as.data.frame() %>%
+  select(-BiasTerm) %>% 
+  mutate(x4_feature_values = as.vector(df_frame_split[[2]]$x4)) %>% 
+  ggplot(aes(x = x4_feature_values, y = x4)) +
+  geom_jitter(aes(color = x4), width = 0.1) +
+  scale_colour_gradient(low = "red", high = "blue", name = 'SHAP values') +
+  ylab('Shapley\'s values for x4 feature') +
+  xlab('x4 feature classes')

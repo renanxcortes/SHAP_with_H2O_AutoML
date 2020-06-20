@@ -30,7 +30,7 @@ automl_model <- h2o.automl(#x = x,
                            y = 'y',
                            balance_classes = TRUE,
                            training_frame = df_frame_split[[1]],
-                           nfolds = 5, # Default is nfolds = 5!!!
+                           nfolds = 4,
                            #validation_frame = df_frame_split[[2]], # read help(h2o.automl) !!!Optional. This argument is ignored unless the user sets nfolds = 0!!!
                            leaderboard_frame = df_frame_split[[2]],
                            max_runtime_secs = 60 * 2, # Two minutes

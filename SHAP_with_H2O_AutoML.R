@@ -64,7 +64,8 @@ shap_df <- SHAP_values %>%
 p1 <- ggplot(shap_df, aes(x = shap_value, y = reorder(feature, shap_importance))) +
   ggbeeswarm::geom_quasirandom(groupOnX = FALSE, varwidth = TRUE, size = 0.4, alpha = 0.25, width = 0.15) +
   xlab("SHAP value") +
-  ylab(NULL)
+  ylab(NULL) +
+  theme_minimal(base_size = 15)
 
 
 # SHAP importance plot
@@ -75,7 +76,8 @@ p2 <- shap_df %>%
   geom_col() +
   coord_flip() +
   xlab(NULL) +
-  ylab("mean(|SHAP value|)")
+  ylab("mean(|SHAP value|)") +
+  theme_minimal(base_size = 15)
 
 # SHAP force plot
 p3 <- shap_df %>% 
@@ -84,11 +86,12 @@ p3 <- shap_df %>%
   mutate(color = ifelse(shap_force < 0, 'Negative', 'Positive')) %>% 
   ggplot(aes(x = reorder(feature, shap_importance), y = shap_force, fill = color)) +
   geom_col() +
-  scale_fill_manual("legend", values = c("Negative" = "red", "Positive" = "blue")) + # https://stackoverflow.com/questions/38788357/change-bar-plot-colour-in-geom-bar-with-ggplot2-in-r
+  scale_fill_manual("Direction", values = c("Negative" = "red", "Positive" = "blue")) + # https://stackoverflow.com/questions/38788357/change-bar-plot-colour-in-geom-bar-with-ggplot2-in-r
   coord_flip() +
   xlab(NULL) +
   ylab("mean(SHAP value)") +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  theme_minimal(base_size = 15)
 
 # Combine plots
 gridExtra::grid.arrange(p1, p2, p3, nrow = 1)
@@ -103,4 +106,5 @@ SHAP_values %>%
   geom_jitter(aes(color = x4), width = 0.1) +
   scale_colour_gradient(low = "red", high = "blue", name = 'SHAP values') +
   ylab('Shapley\'s values for x4 feature') +
-  xlab('x4 feature classes')
+  xlab('x4 feature classes') +
+  theme_minimal(base_size = 15)

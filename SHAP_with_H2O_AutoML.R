@@ -59,7 +59,7 @@ shap_df <- SHAP_values %>%
 
 # SHAP contribution plot
 p1 <- ggplot(shap_df, aes(x = shap_value, y = reorder(feature, shap_importance))) +
-  ggbeeswarm::geom_quasirandom(groupOnX = FALSE, varwidth = TRUE, size = 0.4, alpha = 0.25, width = 0.15) +
+  ggbeeswarm::geom_quasirandom(groupOnX = FALSE, varwidth = TRUE, size = 0.9, alpha = 0.5, width = 0.15) +
   xlab("SHAP value") +
   ylab(NULL) +
   theme_minimal(base_size = 15)
@@ -68,8 +68,9 @@ p1 <- ggplot(shap_df, aes(x = shap_value, y = reorder(feature, shap_importance))
 p2 <- shap_df %>% 
   select(feature, shap_importance) %>%
   distinct() %>% 
-  ggplot(aes(x = reorder(feature, shap_importance), y = shap_importance)) +
-  geom_col() +
+  ggplot(aes(x = reorder(feature, shap_importance), 
+             y = shap_importance)) +
+  geom_col(fill = 'black') +
   coord_flip() +
   xlab(NULL) +
   ylab("mean(|SHAP value|)") +

@@ -25,6 +25,9 @@ df_frame <- as.h2o(df)
 # Source: http://h2o-release.s3.amazonaws.com/h2o/master/3552/docs-website/h2o-docs/datamunge/splitdatasets.html
 df_frame_split <- h2o.splitFrame(df_frame, ratios = 0.8)
 
+# More info regarding generated frames in the "Auto-Generated Frames" section of 
+# https://h2o-release.s3.amazonaws.com/h2o/rel-wheeler/1/docs-website/h2o-docs/automl.html
+
 # Metric for binary classification (deviance is the default). Check documentation here http://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html
 automl_model <- h2o.automl(#x = x, 
                            y = 'y',

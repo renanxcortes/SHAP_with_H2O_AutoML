@@ -25,16 +25,13 @@ df_frame <- as.h2o(df)
 # Source: http://h2o-release.s3.amazonaws.com/h2o/master/3552/docs-website/h2o-docs/datamunge/splitdatasets.html
 df_frame_split <- h2o.splitFrame(df_frame, ratios = 0.8)
 
-# More info regarding generated frames in the "Auto-Generated Frames" section of 
-# https://h2o-release.s3.amazonaws.com/h2o/rel-wheeler/1/docs-website/h2o-docs/automl.html
-
 # Metric for binary classification (deviance is the default). Check documentation here http://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html
 automl_model <- h2o.automl(#x = x, 
                            y = 'y',
                            balance_classes = TRUE,
                            training_frame = df_frame_split[[1]],
                            nfolds = 4,
-                           #validation_frame = df_frame_split[[2]], # read help(h2o.automl) !!!Optional. This argument is ignored unless the user sets nfolds = 0!!!
+                           #validation_frame = df_frame_split[[2]], # read help(h2o.automl) !!!Optional. This argument is ignored unless the user sets nfolds = 0!!! By default and when nfolds > 1, cross-validation metrics will be used for early stopping and thus validation_frame will be ignored.
                            leaderboard_frame = df_frame_split[[2]],
                            max_runtime_secs = 60 * 2, # Two minutes
                            #exclude_algos = "StackedEnsemble", # Global Importance of Stacked models is tricky
